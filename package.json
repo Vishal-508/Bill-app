@@ -1,0 +1,21 @@
+{
+  "name": "shree-gopal-mdf-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MERN monorepo for Shree Gopal MDF — billing, invoicing, and customer portal for an MDF cutting board business.",
+  "workspaces": [
+    "backend",
+    "admin-dashboard",
+    "customer-client",
+    "shared"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:admin": "npm run dev --workspace admin-dashboard",
+    "dev:customer": "npm run dev --workspace customer-client"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

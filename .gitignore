@@ -1,0 +1,69 @@
+# ── Dependencies ──────────────────────────────────────────────
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# ── Environment files ─────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+**/.env
+!**/.env.example
+
+# ── Build output ──────────────────────────────────────────────
+dist/
+build/
+**/dist/
+**/build/
+*.tsbuildinfo
+
+# ── Vite ──────────────────────────────────────────────────────
+.vite/
+**/.vite/
+
+# ── Testing / coverage ────────────────────────────────────────
+coverage/
+**/coverage/
+.nyc_output/
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# ── OS files ──────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Editors / IDEs ────────────────────────────────────────────
+.idea/
+.vscode/settings.json
+.claude/settings.local.json
+*.swp
+*.swo
+*~
+
+# ── Runtime / generated content ───────────────────────────────
+uploads/
+temp/
+generated-pdfs/
+**/uploads/
+**/temp/
+**/generated-pdfs/
+
+# ── Excel / source data (keep folder, ignore files) ───────────
+data/*.xlsx
+data/*.xlsm
+**/data/*.xlsx
+**/data/*.xlsm
+!**/data/.gitkeep
+
+# ── Misc ──────────────────────────────────────────────────────
+*.local
+.cache/

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "PowerShell($r = Invoke-WebRequest http://localhost:5000/api/health -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\"; \"Body:\"; $r.Content)",
+      "PowerShell($r = Invoke-WebRequest http://localhost:5173 -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\"; \"Content-Type: $\\($r.Headers.'Content-Type'\\)\"; \"First 300 chars of body:\"; $r.Content.Substring\\(0, [Math]::Min\\(300, $r.Content.Length\\)\\))",
+      "PowerShell($r = Invoke-WebRequest http://localhost:5174 -UseBasicParsing; \"Status: $\\($r.StatusCode\\)\"; \"Content-Type: $\\($r.Headers.'Content-Type'\\)\"; \"Body length: $\\($r.Content.Length\\) chars\")"
+    ]
+  }
+}
