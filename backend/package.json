@@ -7,7 +7,13 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test:user": "node scripts/testUserModel.js",
+    "test:jwt": "node scripts/testJWT.js",
+    "create:testuser": "node scripts/createTestUser.js",
+    "seed:admin": "node scripts/seedAdmin.js",
+    "list:users": "node scripts/listUsers.js",
+    "test:e2e": "node scripts/testE2E.js"
   },
   "engines": {
     "node": ">=20"

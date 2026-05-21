@@ -64,6 +64,9 @@ data/*.xlsm
 **/data/*.xlsm
 !**/data/.gitkeep
 
+# ── Backend runtime logs ──────────────────────────────────────
+backend/logs/
+
 # ── Misc ──────────────────────────────────────────────────────
 *.local
 .cache/
