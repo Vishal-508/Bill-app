@@ -70,7 +70,8 @@ exports.list = asyncHandler(async (req, res) => {
   builder
     .addObjectIdFilter('grade', q.grade)
     .addFilter('brand', q.brand)
-    .addFilter('pricingUnit', q.pricingUnit);
+    .addFilter('pricingUnit', q.pricingUnit)
+    .addFilter('productType', q.productType);  // carry-forward fix from Prompt 3 Section H
 
   if (q.gradeCode) {
     const grade = await ProductGrade.findByCode(q.gradeCode);

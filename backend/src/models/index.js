@@ -7,15 +7,13 @@ const ProductAttribute = require('./ProductAttribute');
 const StandardBundleSize = require('./StandardBundleSize');
 const ShapeCuttingRate = require('./ShapeCuttingRate');
 const CuttingChargeRule = require('./CuttingChargeRule');
+const SystemSetting = require('./SystemSetting');
+const Order = require('./Order');
+const StockMovement = require('./StockMovement');
 
 module.exports = {
-  User,
-  Customer,
-  BusinessSegment,
-  Product,
-  ProductGrade,
-  ProductAttribute,
-  StandardBundleSize,
-  ShapeCuttingRate,
-  CuttingChargeRule,
+  User, Customer, BusinessSegment,
+  Product, ProductGrade, ProductAttribute,
+  StandardBundleSize, ShapeCuttingRate, CuttingChargeRule,
+  SystemSetting, Order, StockMovement,
 };

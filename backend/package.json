@@ -26,7 +26,14 @@
     "seed:raw-sheets": "node scripts/seedRawSheets.js",
     "seed:bundles": "node scripts/seedPreCutBundles.js",
     "seed:all-catalog": "npm run seed:shapes && npm run seed:cutting-rules && npm run seed:bundle-sizes && npm run seed:raw-sheets && npm run seed:bundles",
-    "test:prompt3-e2e": "node scripts/testPrompt3E2E.js"
+    "test:prompt3-e2e": "node scripts/testPrompt3E2E.js",
+    "seed:settings": "node scripts/seedSystemSettings.js",
+    "test:order-model": "node scripts/testOrderModel.js",
+    "test:pricing-engine": "node scripts/testPricingEngine.js",
+    "test:stock-integration": "node scripts/testStockIntegration.js",
+    "test:payments": "node scripts/testPaymentTracking.js",
+    "test:analytics": "node scripts/testOrderAnalytics.js",
+    "test:prompt4-e2e": "node scripts/testPrompt4E2E.js"
   },
   "engines": {
     "node": ">=20"
