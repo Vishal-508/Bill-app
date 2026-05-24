@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cash Memo {{billNumber}}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 11px;
+      color: #2c3e50;
+      line-height: 1.4;
+      padding: 12mm;
+    }
+
+    /* ═══ CONTAINER (half A4 effectively) ═══ */
+    .receipt-container {
+      width: 100%;
+      max-width: 148mm;
+      margin: 0 auto;
+      border: 2px solid #2c3e50;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* ═══ HEADER ═══ */
+    .receipt-header {
+      background: #2c3e50;
+      color: white;
+      padding: 10px 14px;
+      text-align: center;
+    }
+
+    .business-name {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .business-tagline {
+      font-size: 9px;
+      opacity: 0.9;
+      font-style: italic;
+    }
+
+    .business-contact {
+      font-size: 9px;
+      margin-top: 4px;
+      opacity: 0.95;
+    }
+
+    /* ═══ INVOICE TITLE ═══ */
+    .invoice-title-bar {
+      background: #ecf0f1;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #bdc3c7;
+    }
+
+    .invoice-type {
+      font-size: 13px;
+      font-weight: bold;
+      color: #2c3e50;
+      letter-spacing: 0.5px;
+    }
+
+    .invoice-number {
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    /* ═══ META ROW ═══ */
+    .meta-row {
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      border-bottom: 1px dashed #bdc3c7;
+    }
+
+    .meta-row strong { color: #2c3e50; }
+
+    /* ═══ CUSTOMER BLOCK ═══ */
+    .customer-block {
+      padding: 8px 14px;
+      background: #f8f9fa;
+      border-bottom: 1px dashed #bdc3c7;
+      font-size: 10px;
+    }
+
+    .customer-name {
+      font-size: 12px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 2px;
+    }
+
+    .customer-meta {
+      color: #5d6d7e;
+      font-size: 9px;
+    }
+
+    /* ═══ ITEMS TABLE ═══ */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    .items-table thead th {
+      background: #34495e;
+      color: white;
+      padding: 6px 10px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    .items-table th.right { text-align: right; }
+    .items-table th.center { text-align: center; }
+
+    .items-table tbody td {
+      padding: 5px 10px;
+      border-bottom: 1px dashed #ecf0f1;
+      vertical-align: middle;
+    }
+
+    .items-table tbody tr:last-child td {
+      border-bottom: 1px solid #2c3e50;
+    }
+
+    .item-name {
+      font-weight: 500;
+    }
+
+    .item-tiny-meta {
+      font-size: 8px;
+      color: #95a5a6;
+      font-style: italic;
+    }
+
+    .currency {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    .center { text-align: center; }
+
+    /* ═══ TOTAL SECTION ═══ */
+    .total-section {
+      background: #2c3e50;
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-label {
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .total-amount {
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+    }
+
+    .gst-note {
+      padding: 4px 14px;
+      background: #ecf0f1;
+      font-size: 8px;
+      color: #5d6d7e;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ═══ AMOUNT WORDS ═══ */
+    .amount-words {
+      padding: 6px 14px;
+      font-size: 9px;
+      background: #fef5e6;
+      border-top: 1px dashed #f39c12;
+      border-bottom: 1px dashed #f39c12;
+    }
+
+    .amount-words strong {
+      color: #d35400;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .amount-words .value {
+      font-style: italic;
+      margin-left: 4px;
+    }
+
+    /* ═══ PAYMENT STATUS BAR ═══ */
+    .payment-bar {
+      padding: 6px 14px;
+      font-size: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .payment-bar.paid {
+      background: #d5f4e6;
+      color: #27ae60;
+      border-top: 2px solid #27ae60;
+    }
+
+    .payment-bar.partial {
+      background: #fef5e6;
+      color: #e67e22;
+      border-top: 2px solid #f39c12;
+    }
+
+    .payment-bar.unpaid {
+      background: #fadbd8;
+      color: #c0392b;
+      border-top: 2px solid #e74c3c;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .receipt-footer {
+      padding: 8px 14px;
+      background: #f8f9fa;
+      border-top: 1px dashed #bdc3c7;
+      text-align: center;
+      font-size: 8px;
+      color: #7f8c8d;
+    }
+
+    .signature-line {
+      margin-top: 25px;
+      border-top: 1px dashed #95a5a6;
+      padding-top: 4px;
+      font-size: 8px;
+      color: #7f8c8d;
+      text-align: right;
+      width: 40%;
+      margin-left: auto;
+      padding-right: 14px;
+    }
+
+    .thank-you {
+      text-align: center;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #16a085;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="receipt-container">
+
+    <!-- ═══ HEADER ═══ -->
+    <div class="receipt-header">
+      <div class="business-name">{{uppercase business.name}}</div>
+      <div class="business-tagline">Quality MDF Boards &amp; Custom Cutting</div>
+      <div class="business-contact">
+        {{business.phone}}
+        {{#if business.gstin}} &nbsp;|&nbsp; GSTIN: {{business.gstin}}{{/if}}
+      </div>
+    </div>
+
+    <!-- ═══ INVOICE TYPE & NUMBER ═══ -->
+    <div class="invoice-title-bar">
+      <div class="invoice-type">{{#if hasGst}}CASH MEMO{{else}}RECEIPT{{/if}}</div>
+      <div class="invoice-number"># {{billNumber}}</div>
+    </div>
+
+    <!-- ═══ DATE & ORDER REF ═══ -->
+    <div class="meta-row">
+      <span><strong>Date:</strong> {{formatDate issueDate}}</span>
+      {{#if orderNumber}}<span><strong>Order:</strong> {{orderNumber}}</span>{{/if}}
+    </div>
+
+    <!-- ═══ CUSTOMER BLOCK ═══ -->
+    <div class="customer-block">
+      <div class="customer-name">{{customer.customerName}}</div>
+      <div class="customer-meta">
+        {{#if customer.phone}}{{customer.phone}}{{/if}}
+        {{#if customer.companyName}} &nbsp;|&nbsp; {{customer.companyName}}{{/if}}
+        {{#if customer.gstin}}<br>GSTIN: {{customer.gstin}}{{/if}}
+      </div>
+    </div>
+
+    <!-- ═══ ITEMS TABLE ═══ -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 28px;" class="center">#</th>
+          <th>Item</th>
+          <th style="width: 50px;" class="center">Qty</th>
+          <th style="width: 80px;" class="right">Amount (&#8377;)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+        <tr>
+          <td class="center">{{this.serialNo}}</td>
+          <td>
+            <div class="item-name">{{this.description}}</div>
+            {{#if this.dimensionsDisplay}}<div class="item-tiny-meta">{{this.dimensionsDisplay}}</div>{{/if}}
+          </td>
+          <td class="center">{{this.quantity}} {{this.unit}}</td>
+          <td class="currency"><strong>{{formatCurrency this.lineTotal}}</strong></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <!-- ═══ AMOUNT IN WORDS ═══ -->
+    <div class="amount-words">
+      <strong>In Words:</strong>
+      <span class="value">{{amountInWords}}</span>
+    </div>
+
+    <!-- ═══ GRAND TOTAL ═══ -->
+    <div class="total-section">
+      <div class="total-label">TOTAL</div>
+      <div class="total-amount">&#8377; {{formatCurrency grandTotal}}</div>
+    </div>
+
+    <!-- ═══ GST NOTE ═══ -->
+    {{#if hasGst}}
+    <div class="gst-note">
+      All prices inclusive of GST {{#if isIntraState}}(CGST + SGST){{else}}(IGST){{/if}}
+    </div>
+    {{else}}
+    <div class="gst-note">
+      Tax-free transaction
+    </div>
+    {{/if}}
+
+    <!-- ═══ PAYMENT STATUS ═══ -->
+    {{#if (eq paymentStatus 'PAID')}}
+    <div class="payment-bar paid">&#10003; PAID IN FULL</div>
+    {{/if}}
+    {{#if (eq paymentStatus 'PARTIAL')}}
+    <div class="payment-bar partial">&#9888; PARTIAL PAYMENT &mdash; Balance Due: &#8377; {{formatCurrency amountDue}}</div>
+    {{/if}}
+    {{#if (eq paymentStatus 'UNPAID')}}
+    <div class="payment-bar unpaid">&#10007; PAYMENT PENDING</div>
+    {{/if}}
+
+    <!-- ═══ FOOTER ═══ -->
+    <div class="receipt-footer">
+      Goods once sold will not be taken back.<br>
+      {{#if business.state}}Subject to {{business.state}} Jurisdiction{{/if}}
+
+      <div class="signature-line">
+        {{#if issuerSignature.signatureImage}}
+          <img src="{{issuerSignature.signatureImage}}"
+               alt="Authorized Signatory"
+               style="max-height: 30px; max-width: 120px; display: block; margin-left: auto;" />
+        {{/if}}
+        Authorized Signatory
+      </div>
+    </div>
+
+    <!-- ═══ THANK YOU ═══ -->
+    <div class="thank-you">
+      Thank You For Your Business!
+    </div>
+
+  </div>
+
+</body>
+</html>

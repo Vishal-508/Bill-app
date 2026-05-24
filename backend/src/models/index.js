@@ -10,10 +10,12 @@ const CuttingChargeRule = require('./CuttingChargeRule');
 const SystemSetting = require('./SystemSetting');
 const Order = require('./Order');
 const StockMovement = require('./StockMovement');
+const Bill = require('./Bill');
 
 module.exports = {
   User, Customer, BusinessSegment,
   Product, ProductGrade, ProductAttribute,
   StandardBundleSize, ShapeCuttingRate, CuttingChargeRule,
   SystemSetting, Order, StockMovement,
+  Bill,
 };

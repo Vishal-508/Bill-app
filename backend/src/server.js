@@ -131,4 +131,22 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
+// ═══ Graceful Shutdown ═══
+const { closeBrowser } = require('./utils/pdfService');
+
+async function gracefulShutdown(signal) {
+  logger.info(`${signal} received, shutting down gracefully`);
+
+  try {
+    await closeBrowser();
+  } catch (err) {
+    logger.error('Error during shutdown:', err);
+  }
+
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 startServer();

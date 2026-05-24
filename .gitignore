@@ -57,6 +57,14 @@ generated-pdfs/
 **/temp/
 **/generated-pdfs/
 
+# ── Generated bill PDFs (recreatable from data) ───────────────
+backend/storage/bills/*.pdf
+**/storage/bills/*.pdf
+backend/storage/temp/
+**/storage/temp/
+!**/storage/bills/.gitkeep
+!**/storage/temp/.gitkeep
+
 # ── Excel / source data (keep folder, ignore files) ───────────
 data/*.xlsx
 data/*.xlsm

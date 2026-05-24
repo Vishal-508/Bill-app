@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice {{billNumber}}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 11px;
+      color: #2c3e50;
+      line-height: 1.4;
+      padding: 15mm;
+    }
+
+    /* ═══ COMPACT HEADER ═══ */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .business-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .business-line {
+      font-size: 10px;
+      color: #5d6d7e;
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .invoice-meta {
+      text-align: right;
+    }
+
+    .invoice-label {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      letter-spacing: 1px;
+    }
+
+    .meta-line {
+      font-size: 10px;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    .meta-line strong { color: #2c3e50; }
+
+    /* ═══ COMPACT PARTIES ═══ */
+    .parties {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+
+    .party {
+      flex: 1;
+      padding: 8px 10px;
+      background: #f8f9fa;
+      border-left: 3px solid #3498db;
+    }
+
+    .party-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: #7f8c8d;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .party-name {
+      font-weight: bold;
+      color: #2c3e50;
+      font-size: 11px;
+    }
+
+    .gstin-inline {
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      color: #16a085;
+      font-weight: bold;
+    }
+
+    /* ═══ COMPACT ITEMS TABLE ═══ */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 10px;
+    }
+
+    .items-table thead {
+      background: #34495e;
+      color: white;
+    }
+
+    .items-table th {
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    .items-table th.right { text-align: right; }
+    .items-table th.center { text-align: center; }
+
+    .items-table tbody td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #ecf0f1;
+      vertical-align: top;
+    }
+
+    .items-table tbody tr:last-child td {
+      border-bottom: 2px solid #34495e;
+    }
+
+    .item-name {
+      font-weight: 500;
+    }
+
+    .item-meta {
+      font-size: 8px;
+      color: #7f8c8d;
+      margin-top: 1px;
+    }
+
+    .currency {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    .center { text-align: center; }
+
+    /* ═══ COMPACT TOTALS ═══ */
+    .totals-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 15px;
+    }
+
+    .amount-words-box {
+      flex: 1;
+      padding: 8px 12px;
+      background: #fef5e6;
+      border-left: 3px solid #f39c12;
+      font-size: 10px;
+    }
+
+    .amount-words-box .label {
+      font-weight: bold;
+      color: #d35400;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .amount-words-box .value {
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .totals-mini {
+      width: 240px;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    .totals-mini td {
+      padding: 3px 10px;
+    }
+
+    .totals-mini .label {
+      color: #5d6d7e;
+    }
+
+    .totals-mini .value {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+    }
+
+    .totals-mini .grand-total {
+      background: #2c3e50;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .totals-mini .grand-total td {
+      padding: 6px 10px;
+    }
+
+    /* ═══ COMPACT FOOTER ═══ */
+    .footer-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 9px;
+    }
+
+    .footer-col {
+      flex: 1;
+      padding: 8px 10px;
+      background: #f8f9fa;
+      border-radius: 3px;
+    }
+
+    .footer-col h5 {
+      font-size: 10px;
+      color: #2c3e50;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .footer-col p {
+      line-height: 1.5;
+      color: #5d6d7e;
+    }
+
+    /* ═══ SIGNATURE ROW ═══ */
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      font-size: 10px;
+    }
+
+    .sig-box {
+      width: 200px;
+      text-align: center;
+    }
+
+    .sig-line {
+      border-top: 1px solid #2c3e50;
+      padding-top: 4px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .sig-label {
+      font-size: 8px;
+      color: #95a5a6;
+      margin-top: 2px;
+    }
+
+    /* ═══ TINY FOOTER ═══ */
+    .tiny-footer {
+      margin-top: 15px;
+      padding-top: 8px;
+      border-top: 1px solid #ecf0f1;
+      text-align: center;
+      font-size: 8px;
+      color: #95a5a6;
+    }
+
+    /* ═══ STATUS BADGES ═══ */
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 8px;
+      font-weight: bold;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-paid { background: #27ae60; color: white; }
+    .badge-partial { background: #f39c12; color: white; }
+    .badge-unpaid { background: #e74c3c; color: white; }
+    .badge-revision { background: #e74c3c; color: white; margin-left: 5px; }
+
+    /* ═══ NOTES SECTION ═══ */
+    .notes-section {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background: #f4f6f8;
+      border-left: 3px solid #95a5a6;
+      font-size: 9px;
+      font-style: italic;
+      color: #5d6d7e;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ COMPACT HEADER ═══ -->
+  <div class="header">
+    <div>
+      <div class="business-name">{{business.name}}</div>
+      <div class="business-line">
+        {{business.address}}<br>
+        {{business.phone}} &bull; {{business.email}}
+        {{#if business.gstin}}<br><strong>GSTIN:</strong> <span class="gstin-inline">{{business.gstin}}</span>{{/if}}
+      </div>
+    </div>
+    <div class="invoice-meta">
+      <div class="invoice-label">{{#if hasGst}}TAX INVOICE{{else}}INVOICE{{/if}}</div>
+      <div class="meta-line">
+        <strong>#</strong> {{billNumber}}<br>
+        <strong>Date:</strong> {{formatDate issueDate}}<br>
+        {{#if orderNumber}}<strong>Order:</strong> {{orderNumber}}<br>{{/if}}
+        {{#if (eq paymentStatus 'PAID')}}<span class="badge badge-paid">PAID</span>{{/if}}
+        {{#if (eq paymentStatus 'PARTIAL')}}<span class="badge badge-partial">PARTIAL</span>{{/if}}
+        {{#if (eq paymentStatus 'UNPAID')}}<span class="badge badge-unpaid">UNPAID</span>{{/if}}
+        {{#if isRevision}}<span class="badge badge-revision">REV {{revisionNumber}}</span>{{/if}}
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COMPACT PARTIES ═══ -->
+  <div class="parties">
+    <div class="party">
+      <div class="party-label">Bill To</div>
+      <div class="party-name">{{customer.customerName}}</div>
+      {{#if customer.companyName}}<div>{{customer.companyName}}</div>{{/if}}
+      {{#if customer.billingAddress}}
+      <div>
+        {{customer.billingAddress.addressLine1}}{{#if customer.billingAddress.city}}, {{customer.billingAddress.city}}{{/if}}<br>
+        {{#if customer.billingAddress.state}}{{customer.billingAddress.state}}{{/if}}{{#if customer.billingAddress.pincode}} - {{customer.billingAddress.pincode}}{{/if}}
+      </div>
+      {{/if}}
+      {{#if customer.phone}}<div>Phone: {{customer.phone}}</div>{{/if}}
+      {{#if customer.gstin}}<div><strong>GSTIN:</strong> <span class="gstin-inline">{{customer.gstin}}</span></div>{{/if}}
+    </div>
+
+    <div class="party">
+      <div class="party-label">Invoice Details</div>
+      {{#if placeOfSupply}}<div><strong>Place of Supply:</strong> {{placeOfSupply}}</div>{{/if}}
+      {{#if dueDate}}<div><strong>Due Date:</strong> {{formatDate dueDate}}</div>{{/if}}
+      {{#if deliveryMethod}}<div><strong>Delivery:</strong> {{deliveryMethod}}</div>{{/if}}
+      {{#if transportDetails}}<div><strong>Transport:</strong> {{transportDetails}}</div>{{/if}}
+      {{#if vehicleNumber}}<div><strong>Vehicle:</strong> {{vehicleNumber}}</div>{{/if}}
+    </div>
+  </div>
+
+  <!-- ═══ COMPACT ITEMS TABLE ═══ -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width: 30px;" class="center">#</th>
+        <th>Item Description</th>
+        <th style="width: 60px;" class="center">HSN</th>
+        <th style="width: 60px;" class="center">Qty</th>
+        <th style="width: 80px;" class="right">Rate (&#8377;)</th>
+        <th style="width: 90px;" class="right">Amount (&#8377;)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each items}}
+      <tr>
+        <td class="center">{{this.serialNo}}</td>
+        <td>
+          <div class="item-name">{{this.description}}</div>
+          {{#if this.dimensionsDisplay}}<div class="item-meta">Size: {{this.dimensionsDisplay}}</div>{{/if}}
+          {{#if this.hasCutting}}<div class="item-meta">+ Cutting included</div>{{/if}}
+        </td>
+        <td class="center">{{this.hsnCode}}</td>
+        <td class="center">{{this.quantity}} {{this.unit}}</td>
+        <td class="currency">{{formatCurrency this.pricePerUnit}}</td>
+        <td class="currency"><strong>{{formatCurrency this.lineTotal}}</strong></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <!-- ═══ COMPACT TOTALS ROW ═══ -->
+  <div class="totals-bar">
+    <div class="amount-words-box">
+      <div class="label">Amount in Words</div>
+      <div class="value">{{amountInWords}}</div>
+    </div>
+
+    <table class="totals-mini">
+      <tr>
+        <td class="label">Subtotal:</td>
+        <td class="value">{{formatCurrency subtotal}}</td>
+      </tr>
+      {{#if totalDiscount}}
+      <tr>
+        <td class="label">Discount:</td>
+        <td class="value">- {{formatCurrency totalDiscount}}</td>
+      </tr>
+      {{/if}}
+      {{#if hasGst}}
+        {{#if isIntraState}}
+        <tr>
+          <td class="label">CGST + SGST:</td>
+          <td class="value">+ {{formatCurrency totalGst}}</td>
+        </tr>
+        {{else}}
+        <tr>
+          <td class="label">IGST:</td>
+          <td class="value">+ {{formatCurrency totalIgst}}</td>
+        </tr>
+        {{/if}}
+      {{/if}}
+      {{#if roundOff}}
+      <tr>
+        <td class="label">Round Off:</td>
+        <td class="value">{{formatCurrency roundOff}}</td>
+      </tr>
+      {{/if}}
+      <tr class="grand-total">
+        <td class="label">TOTAL:</td>
+        <td class="value">&#8377; {{formatCurrency grandTotal}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══ NOTES (if any) ═══ -->
+  {{#if notesToCustomer}}
+  <div class="notes-section">
+    {{notesToCustomer}}
+  </div>
+  {{/if}}
+
+  <!-- ═══ COMPACT FOOTER ═══ -->
+  <div class="footer-row">
+    {{#if business.bankDetails}}
+    <div class="footer-col">
+      <h5>Bank Details</h5>
+      <p style="white-space: pre-line;">{{business.bankDetails}}</p>
+    </div>
+    {{/if}}
+    {{#if termsAndConditions}}
+    <div class="footer-col">
+      <h5>Terms &amp; Conditions</h5>
+      <p>{{termsAndConditions}}</p>
+    </div>
+    {{/if}}
+  </div>
+
+  <!-- ═══ SIGNATURES ═══ -->
+  <div class="signatures">
+    <div class="sig-box">
+      {{#if customerSignature.signatureImage}}
+        <img src="{{customerSignature.signatureImage}}"
+             alt="Customer Signature"
+             style="max-height: 40px; max-width: 160px; margin-bottom: 4px;" />
+      {{/if}}
+      <div class="sig-line">{{#if customerSignature.signedByName}}{{customerSignature.signedByName}}{{else}}Customer Signature{{/if}}</div>
+      <div class="sig-label">
+        {{#if customerSignature.signedAt}}Signed: {{formatDate customerSignature.signedAt}}{{else}}Received in good condition{{/if}}
+      </div>
+    </div>
+    <div class="sig-box">
+      {{#if issuerSignature.signatureImage}}
+        <img src="{{issuerSignature.signatureImage}}"
+             alt="Authorized Signatory"
+             style="max-height: 40px; max-width: 160px; margin-bottom: 4px;" />
+      {{/if}}
+      <div class="sig-line">For {{business.name}}</div>
+      <div class="sig-label">Authorized Signatory</div>
+    </div>
+  </div>
+
+  <!-- ═══ TINY FOOTER ═══ -->
+  <div class="tiny-footer">
+    {{business.name}} &bull; {{business.address}}
+    {{#if business.state}} &bull; Subject to {{business.state}} Jurisdiction{{/if}} &bull; E. &amp; O. E.
+  </div>
+
+</body>
+</html>

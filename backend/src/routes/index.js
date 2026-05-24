@@ -10,6 +10,7 @@ const attributeRoutes = require('./productAttribute.routes');
 const orderRoutes = require('./order.routes');
 const settingsRoutes = require('./systemSetting.routes');
 const stockMovementRoutes = require('./stockMovement.routes');
+const billRoutes = require('./bill.routes');
 
 router.use('/auth', authRoutes);
 router.use('/customers', customerRoutes);
@@ -20,5 +21,6 @@ router.use('/product-attributes', attributeRoutes);
 router.use('/orders', orderRoutes);
 router.use('/system-settings', settingsRoutes);
 router.use('/stock-movements', stockMovementRoutes);
+router.use('/bills', billRoutes);
 
 module.exports = router;

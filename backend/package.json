@@ -33,7 +33,15 @@
     "test:stock-integration": "node scripts/testStockIntegration.js",
     "test:payments": "node scripts/testPaymentTracking.js",
     "test:analytics": "node scripts/testOrderAnalytics.js",
-    "test:prompt4-e2e": "node scripts/testPrompt4E2E.js"
+    "test:prompt4-e2e": "node scripts/testPrompt4E2E.js",
+    "test:bill-model": "node scripts/testBillModel.js",
+    "test:pdf-service": "node scripts/testPdfService.js",
+    "test:detailed-gst": "node scripts/testDetailedGstTemplate.js",
+    "test:simple-bill": "node scripts/testSimpleBillTemplate.js",
+    "test:minimal-bill": "node scripts/testMinimalBillTemplate.js",
+    "test:bill-endpoints": "node scripts/testBillEndpoints.js",
+    "test:bill-signatures": "node scripts/testBillSignatures.js",
+    "test:prompt5-e2e": "node scripts/testPrompt5E2E.js"
   },
   "engines": {
     "node": ">=20"
@@ -52,6 +60,7 @@
     "express": "^4.19.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.4.0",
+    "handlebars": "^4.7.9",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.0",
@@ -59,6 +68,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
+    "puppeteer": "^25.0.4",
     "qrcode": "^1.5.3",
     "razorpay": "^2.9.4",
     "react": "^18.3.1",

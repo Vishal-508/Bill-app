@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tax Invoice {{billNumber}}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 10px;
+      color: #2c3e50;
+      line-height: 1.4;
+      padding: 12mm;
+    }
+
+    /* ═══ HEADER ═══ */
+    .invoice-header {
+      border-bottom: 3px double #2c3e50;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .business-info { flex: 1; }
+
+    .business-name {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+
+    .business-tagline {
+      font-size: 10px;
+      color: #7f8c8d;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    .business-details {
+      font-size: 9px;
+      line-height: 1.5;
+      color: #34495e;
+    }
+
+    .business-details strong { color: #2c3e50; }
+
+    .invoice-title {
+      text-align: right;
+      flex: 0 0 200px;
+    }
+
+    .invoice-label {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+      letter-spacing: 1px;
+      border: 2px solid #2c3e50;
+      padding: 6px 12px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .invoice-meta {
+      font-size: 9px;
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    .invoice-meta strong { color: #2c3e50; }
+
+    /* ═══ PARTIES (BILL TO / SHIP TO) ═══ */
+    .parties {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .party-box {
+      flex: 1;
+      border: 1px solid #bdc3c7;
+      border-radius: 3px;
+      padding: 10px;
+      background: #fafbfc;
+    }
+
+    .party-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7f8c8d;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .party-name {
+      font-size: 12px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 3px;
+    }
+
+    .party-details {
+      font-size: 9px;
+      line-height: 1.5;
+      color: #34495e;
+    }
+
+    .gstin {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 2px 6px;
+      background: #ecf0f1;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      font-weight: bold;
+    }
+
+    /* ═══ ITEMS TABLE ═══ */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 9px;
+    }
+
+    .items-table thead th {
+      background: #2c3e50;
+      color: white;
+      padding: 8px 6px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 9px;
+      border: 1px solid #2c3e50;
+    }
+
+    .items-table thead th.right { text-align: right; }
+    .items-table thead th.center { text-align: center; }
+
+    .items-table tbody td {
+      padding: 6px;
+      border: 1px solid #d5dbdb;
+      vertical-align: top;
+    }
+
+    .items-table tbody tr:nth-child(even) { background: #f8f9fa; }
+
+    .item-description {
+      line-height: 1.4;
+    }
+
+    .item-sku {
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      color: #7f8c8d;
+    }
+
+    .item-dim {
+      font-size: 8px;
+      color: #16a085;
+      font-style: italic;
+    }
+
+    .item-notes {
+      font-size: 8px;
+      color: #7f8c8d;
+      margin-top: 2px;
+    }
+
+    .currency {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    .center { text-align: center; }
+
+    /* ═══ TOTALS ═══ */
+    .totals-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .totals-table {
+      width: 320px;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    .totals-table td {
+      padding: 5px 10px;
+      border: 1px solid #d5dbdb;
+    }
+
+    .totals-table .label {
+      font-weight: 500;
+      color: #34495e;
+    }
+
+    .totals-table .value {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+    }
+
+    .totals-table .grand-total {
+      background: #2c3e50;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .totals-table .grand-total td { border-color: #2c3e50; }
+
+    /* ═══ AMOUNT IN WORDS ═══ */
+    .amount-words {
+      background: #fff5e6;
+      border: 1px solid #f39c12;
+      border-radius: 3px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+
+    .amount-words .label {
+      font-weight: bold;
+      color: #d35400;
+      margin-right: 5px;
+    }
+
+    .amount-words .value {
+      font-style: italic;
+      color: #2c3e50;
+    }
+
+    /* ═══ FOOTER SECTIONS ═══ */
+    .footer-sections {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .footer-col { flex: 1; }
+
+    .footer-box {
+      border: 1px solid #bdc3c7;
+      border-radius: 3px;
+      padding: 10px;
+      background: #fafbfc;
+      font-size: 9px;
+    }
+
+    .footer-box h4 {
+      font-size: 10px;
+      color: #2c3e50;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #ecf0f1;
+      padding-bottom: 4px;
+    }
+
+    .footer-box p { line-height: 1.5; white-space: pre-line; }
+
+    .terms {
+      font-size: 8px;
+      line-height: 1.5;
+      color: #34495e;
+    }
+
+    /* ═══ SIGNATURES ═══ */
+    .signatures {
+      display: flex;
+      gap: 30px;
+      margin-top: 25px;
+      page-break-inside: avoid;
+    }
+
+    .signature-box {
+      flex: 1;
+      text-align: center;
+    }
+
+    .signature-line {
+      border-top: 1px solid #2c3e50;
+      margin-top: 50px;
+      padding-top: 5px;
+      font-size: 10px;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    .signature-label {
+      font-size: 8px;
+      color: #7f8c8d;
+      margin-top: 2px;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .invoice-footer {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ecf0f1;
+      text-align: center;
+      font-size: 8px;
+      color: #95a5a6;
+    }
+
+    .invoice-footer .stamp {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #ecf0f1;
+      border-radius: 3px;
+      margin: 0 5px;
+    }
+
+    /* ═══ STATUS BADGES ═══ */
+    .badge-revision, .badge-reprint {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #e74c3c;
+      color: white;
+      font-size: 9px;
+      border-radius: 3px;
+      margin-left: 5px;
+      font-weight: bold;
+    }
+
+    .badge-reprint { background: #f39c12; }
+
+    .page-break-avoid { page-break-inside: avoid; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="invoice-header">
+    <div class="business-info">
+      <div class="business-name">{{business.name}}</div>
+      <div class="business-tagline">Quality MDF Boards &amp; Custom Cutting Solutions</div>
+      <div class="business-details">
+        <strong>Address:</strong> {{business.address}}<br>
+        <strong>Phone:</strong> {{business.phone}} &nbsp;|&nbsp; <strong>Email:</strong> {{business.email}}<br>
+        {{#if business.gstin}}
+        <strong>GSTIN:</strong> <span class="gstin">{{business.gstin}}</span> &nbsp;
+        <strong>State:</strong> {{business.state}}
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="invoice-title">
+      <div class="invoice-label">TAX INVOICE</div>
+      <div class="invoice-meta">
+        <strong>Invoice #:</strong> {{billNumber}}<br>
+        {{#if isRevision}}<span class="badge-revision">REV {{revisionNumber}}</span><br>{{/if}}
+        {{#if isReprint}}<span class="badge-reprint">DUPLICATE</span><br>{{/if}}
+        <strong>Date:</strong> {{formatDate issueDate}}<br>
+        {{#if dueDate}}<strong>Due Date:</strong> {{formatDate dueDate}}<br>{{/if}}
+        {{#if orderNumber}}<strong>Order Ref:</strong> {{orderNumber}}<br>{{/if}}
+        {{#if placeOfSupply}}<strong>Place of Supply:</strong> {{placeOfSupply}}{{/if}}
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PARTIES ═══ -->
+  <div class="parties">
+    <div class="party-box">
+      <div class="party-label">Bill To</div>
+      <div class="party-name">{{customer.customerName}}</div>
+      <div class="party-details">
+        {{#if customer.companyName}}<strong>{{customer.companyName}}</strong><br>{{/if}}
+        {{#if customer.billingAddress}}
+          {{customer.billingAddress.addressLine1}}<br>
+          {{#if customer.billingAddress.addressLine2}}{{customer.billingAddress.addressLine2}}<br>{{/if}}
+          {{customer.billingAddress.city}}, {{customer.billingAddress.state}} - {{customer.billingAddress.pincode}}<br>
+        {{/if}}
+        {{#if customer.phone}}<strong>Phone:</strong> {{customer.phone}}<br>{{/if}}
+        {{#if customer.email}}<strong>Email:</strong> {{customer.email}}<br>{{/if}}
+        {{#if customer.gstin}}
+        <strong>GSTIN:</strong> <span class="gstin">{{customer.gstin}}</span>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if showShippingAddress}}
+    <div class="party-box">
+      <div class="party-label">Ship To</div>
+      <div class="party-name">{{customer.customerName}}</div>
+      <div class="party-details">
+        {{customer.shippingAddress.addressLine1}}<br>
+        {{#if customer.shippingAddress.addressLine2}}{{customer.shippingAddress.addressLine2}}<br>{{/if}}
+        {{customer.shippingAddress.city}}, {{customer.shippingAddress.state}} - {{customer.shippingAddress.pincode}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+  <!-- ═══ ITEMS TABLE ═══ -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width: 25px;" class="center">#</th>
+        <th style="width: 55px;" class="center">HSN</th>
+        <th>Description</th>
+        <th style="width: 40px;" class="center">Qty</th>
+        <th style="width: 70px;" class="right">Rate (&#8377;)</th>
+        {{#if hasGst}}
+        <th style="width: 50px;" class="center">GST%</th>
+        {{/if}}
+        <th style="width: 80px;" class="right">Taxable (&#8377;)</th>
+        {{#if hasGst}}
+          {{#if isIntraState}}
+          <th style="width: 60px;" class="right">CGST</th>
+          <th style="width: 60px;" class="right">SGST</th>
+          {{else}}
+          <th style="width: 70px;" class="right">IGST</th>
+          {{/if}}
+        {{/if}}
+        <th style="width: 80px;" class="right">Total (&#8377;)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each items}}
+      <tr>
+        <td class="center">{{this.serialNo}}</td>
+        <td class="center">{{this.hsnCode}}</td>
+        <td>
+          <div class="item-description">
+            <strong>{{this.description}}</strong>
+            {{#if this.productSku}}<div class="item-sku">SKU: {{this.productSku}}</div>{{/if}}
+            {{#if this.dimensionsDisplay}}<div class="item-dim">Size: {{this.dimensionsDisplay}}</div>{{/if}}
+            {{#if this.hasCutting}}<div class="item-notes">+ Cutting charges included</div>{{/if}}
+            {{#if this.notes}}<div class="item-notes">{{this.notes}}</div>{{/if}}
+          </div>
+        </td>
+        <td class="center">{{this.quantity}} {{this.unit}}</td>
+        <td class="currency">{{formatCurrency this.pricePerUnit}}</td>
+        {{#if ../hasGst}}
+        <td class="center">{{this.gstRatePct}}%</td>
+        {{/if}}
+        <td class="currency">{{formatCurrency this.taxableAmount}}</td>
+        {{#if ../hasGst}}
+          {{#if ../isIntraState}}
+          <td class="currency">{{formatCurrency this.cgst}}</td>
+          <td class="currency">{{formatCurrency this.sgst}}</td>
+          {{else}}
+          <td class="currency">{{formatCurrency this.igst}}</td>
+          {{/if}}
+        {{/if}}
+        <td class="currency"><strong>{{formatCurrency this.lineTotal}}</strong></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <!-- ═══ TOTALS ═══ -->
+  <div class="totals-section">
+    <table class="totals-table">
+      <tr>
+        <td class="label">Subtotal:</td>
+        <td class="value">&#8377; {{formatCurrency subtotal}}</td>
+      </tr>
+      {{#if totalDiscount}}
+      <tr>
+        <td class="label">Discount:</td>
+        <td class="value">- &#8377; {{formatCurrency totalDiscount}}</td>
+      </tr>
+      {{/if}}
+      {{#if additionalCharges}}
+      <tr>
+        <td class="label">Additional Charges:</td>
+        <td class="value">+ &#8377; {{formatCurrency additionalCharges}}</td>
+      </tr>
+      {{/if}}
+      <tr>
+        <td class="label">Taxable Amount:</td>
+        <td class="value">&#8377; {{formatCurrency taxableAmount}}</td>
+      </tr>
+      {{#if hasGst}}
+        {{#if isIntraState}}
+        <tr>
+          <td class="label">CGST:</td>
+          <td class="value">+ &#8377; {{formatCurrency totalCgst}}</td>
+        </tr>
+        <tr>
+          <td class="label">SGST:</td>
+          <td class="value">+ &#8377; {{formatCurrency totalSgst}}</td>
+        </tr>
+        {{else}}
+        <tr>
+          <td class="label">IGST:</td>
+          <td class="value">+ &#8377; {{formatCurrency totalIgst}}</td>
+        </tr>
+        {{/if}}
+      {{/if}}
+      {{#if roundOff}}
+      <tr>
+        <td class="label">Round Off:</td>
+        <td class="value">&#8377; {{formatCurrency roundOff}}</td>
+      </tr>
+      {{/if}}
+      <tr class="grand-total">
+        <td class="label">GRAND TOTAL:</td>
+        <td class="value">&#8377; {{formatCurrency grandTotal}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══ AMOUNT IN WORDS ═══ -->
+  <div class="amount-words">
+    <span class="label">Amount in Words:</span>
+    <span class="value">{{amountInWords}}</span>
+  </div>
+
+  <!-- ═══ FOOTER SECTIONS ═══ -->
+  <div class="footer-sections">
+    <div class="footer-col">
+      <div class="footer-box">
+        <h4>Bank Details</h4>
+        <p>{{business.bankDetails}}</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-box">
+        <h4>Terms &amp; Conditions</h4>
+        <p class="terms">{{termsAndConditions}}</p>
+      </div>
+    </div>
+  </div>
+
+  {{#if notesToCustomer}}
+  <div class="footer-box" style="margin-bottom: 15px;">
+    <h4>Notes</h4>
+    <p>{{notesToCustomer}}</p>
+  </div>
+  {{/if}}
+
+  <!-- ═══ SIGNATURES ═══ -->
+  <div class="signatures">
+    <div class="signature-box">
+      {{#if customerSignature.signatureImage}}
+        <img src="{{customerSignature.signatureImage}}"
+             alt="Customer Signature"
+             style="max-height: 50px; max-width: 180px; margin-bottom: 5px;" />
+      {{/if}}
+      <div class="signature-line">{{#if customerSignature.signedByName}}{{customerSignature.signedByName}}{{else}}Customer Signature{{/if}}</div>
+      <div class="signature-label">
+        {{#if customerSignature.signedAt}}
+          Signed: {{formatDate customerSignature.signedAt}}
+        {{else}}
+          Received goods in good condition
+        {{/if}}
+      </div>
+    </div>
+    <div class="signature-box">
+      {{#if issuerSignature.signatureImage}}
+        <img src="{{issuerSignature.signatureImage}}"
+             alt="Authorized Signatory"
+             style="max-height: 50px; max-width: 180px; margin-bottom: 5px;" />
+      {{/if}}
+      <div class="signature-line">For {{business.name}}</div>
+      <div class="signature-label">Authorized Signatory</div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="invoice-footer">
+    <span class="stamp">{{business.name}}</span>
+    <span>&bull;</span>
+    <span class="stamp">Subject to {{business.state}} Jurisdiction</span>
+    <span>&bull;</span>
+    <span class="stamp">E. &amp; O. E.</span>
+    <br>
+    <span style="margin-top: 5px; display: inline-block;">
+      This is a computer-generated invoice. Signature not required if sent electronically.
+    </span>
+  </div>
+
+</body>
+</html>
