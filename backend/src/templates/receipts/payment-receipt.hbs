@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Receipt {{paymentReference}}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 11px;
+      color: #2c3e50;
+      line-height: 1.5;
+      padding: 15mm;
+    }
+
+    .receipt-container {
+      max-width: 180mm;
+      margin: 0 auto;
+      border: 2px solid #27ae60;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* ═══ HEADER ═══ */
+    .receipt-header {
+      background: #27ae60;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+    }
+
+    .business-name {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .business-tagline {
+      font-size: 10px;
+      opacity: 0.9;
+      font-style: italic;
+      margin-bottom: 6px;
+    }
+
+    .business-meta {
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* ═══ RECEIPT TITLE ═══ */
+    .receipt-title-bar {
+      background: #f8f9fa;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #d5dbdb;
+    }
+
+    .receipt-label {
+      font-size: 18px;
+      font-weight: bold;
+      color: #27ae60;
+      letter-spacing: 2px;
+    }
+
+    .receipt-meta {
+      font-size: 10px;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .receipt-meta strong { color: #2c3e50; }
+
+    /* ═══ STATUS BADGE ═══ */
+    .status-banner {
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .status-banner.captured {
+      background: #d5f4e6;
+      color: #27ae60;
+    }
+
+    .status-banner.refunded {
+      background: #fadbd8;
+      color: #c0392b;
+    }
+
+    .status-banner.partially-refunded {
+      background: #fef5e6;
+      color: #e67e22;
+    }
+
+    /* ═══ CUSTOMER BLOCK ═══ */
+    .customer-block {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #d5dbdb;
+    }
+
+    .section-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: #7f8c8d;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .customer-name {
+      font-size: 14px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 2px;
+    }
+
+    .customer-meta {
+      font-size: 10px;
+      color: #5d6d7e;
+      line-height: 1.5;
+    }
+
+    /* ═══ AMOUNT BLOCK ═══ */
+    .amount-block {
+      padding: 25px 20px;
+      background: #fff;
+      text-align: center;
+      border-bottom: 2px dashed #d5dbdb;
+    }
+
+    .amount-label {
+      font-size: 11px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .amount-value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #27ae60;
+      font-family: 'Courier New', monospace;
+      margin-bottom: 8px;
+    }
+
+    .amount-words {
+      font-size: 11px;
+      font-style: italic;
+      color: #2c3e50;
+      padding: 0 30px;
+    }
+
+    /* ═══ TRANSACTION DETAILS ═══ */
+    .transaction-block {
+      padding: 15px 20px;
+      background: #fbfcfd;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      font-size: 10px;
+    }
+
+    .detail-item {
+      padding: 8px 12px;
+      background: white;
+      border-left: 3px solid #27ae60;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .detail-item .label {
+      font-size: 8px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .detail-item .value {
+      font-size: 10px;
+      color: #2c3e50;
+      font-weight: 500;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+    }
+
+    /* ═══ ORDER/BILL REFERENCES ═══ */
+    .references-block {
+      padding: 12px 20px;
+      background: #ecf0f1;
+      font-size: 10px;
+    }
+
+    .reference-item {
+      display: inline-block;
+      margin-right: 20px;
+      color: #2c3e50;
+    }
+
+    .reference-item strong {
+      color: #16a085;
+    }
+
+    /* ═══ REFUND SECTION ═══ */
+    .refund-block {
+      padding: 15px 20px;
+      background: #fadbd8;
+      border-top: 1px dashed #c0392b;
+      border-bottom: 1px dashed #c0392b;
+    }
+
+    .refund-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #c0392b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .refund-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 10px;
+      color: #2c3e50;
+    }
+
+    .refund-row .amount {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      color: #c0392b;
+    }
+
+    .refund-net {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #c0392b;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .receipt-footer {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      text-align: center;
+      border-top: 2px solid #27ae60;
+    }
+
+    .thank-you {
+      font-size: 14px;
+      color: #27ae60;
+      font-weight: bold;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-note {
+      font-size: 9px;
+      color: #7f8c8d;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .receipt-meta-footer {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #bdc3c7;
+      font-size: 8px;
+      color: #95a5a6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="receipt-container">
+
+    <!-- ═══ HEADER ═══ -->
+    <div class="receipt-header">
+      <div class="business-name">{{uppercase business.name}}</div>
+      <div class="business-tagline">Quality MDF Boards &amp; Custom Cutting Solutions</div>
+      <div class="business-meta">
+        {{business.address}}<br>
+        {{business.phone}} {{#if business.email}} &nbsp;|&nbsp; {{business.email}}{{/if}}
+        {{#if business.gstin}}<br>GSTIN: {{business.gstin}}{{/if}}
+      </div>
+    </div>
+
+    <!-- ═══ RECEIPT TITLE & META ═══ -->
+    <div class="receipt-title-bar">
+      <div class="receipt-label">PAYMENT RECEIPT</div>
+      <div class="receipt-meta">
+        <strong>Receipt #:</strong> {{paymentReference}}<br>
+        <strong>Date:</strong> {{formatDate receiptDate}}<br>
+        {{#if capturedAt}}<strong>Paid On:</strong> {{formatDate capturedAt}}{{/if}}
+      </div>
+    </div>
+
+    <!-- ═══ STATUS BANNER ═══ -->
+    {{#if isRefunded}}
+    <div class="status-banner refunded">&#10007; FULLY REFUNDED</div>
+    {{else if isPartiallyRefunded}}
+    <div class="status-banner partially-refunded">&#9888; PARTIALLY REFUNDED</div>
+    {{else}}
+    <div class="status-banner captured">&#10003; PAYMENT RECEIVED</div>
+    {{/if}}
+
+    <!-- ═══ CUSTOMER BLOCK ═══ -->
+    <div class="customer-block">
+      <div class="section-label">Received From</div>
+      <div class="customer-name">{{customer.customerName}}</div>
+      <div class="customer-meta">
+        {{#if customer.phone}}Phone: {{customer.phone}}{{/if}}
+        {{#if customer.email}} &nbsp;|&nbsp; Email: {{customer.email}}{{/if}}
+      </div>
+    </div>
+
+    <!-- ═══ AMOUNT BLOCK ═══ -->
+    <div class="amount-block">
+      <div class="amount-label">Amount Received</div>
+      <div class="amount-value">&#8377; {{formatCurrency amount}}</div>
+      <div class="amount-words">{{amountInWords}}</div>
+    </div>
+
+    <!-- ═══ TRANSACTION DETAILS ═══ -->
+    <div class="transaction-block">
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <div class="label">Payment Method</div>
+          <div class="value">{{methodDisplay}}</div>
+        </div>
+
+        {{#if methodDetailDisplay}}
+        <div class="detail-item">
+          <div class="label">Method Details</div>
+          <div class="value">{{methodDetailDisplay}}</div>
+        </div>
+        {{/if}}
+
+        {{#if razorpayPaymentId}}
+        <div class="detail-item">
+          <div class="label">Transaction ID</div>
+          <div class="value">{{razorpayPaymentId}}</div>
+        </div>
+        {{/if}}
+
+        <div class="detail-item">
+          <div class="label">Gateway</div>
+          <div class="value">{{gateway}}</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ ORDER/BILL REFERENCES ═══ -->
+    {{#if orderNumber}}
+    <div class="references-block">
+      <span class="reference-item">
+        <strong>Order:</strong> {{orderNumber}}
+      </span>
+      {{#if billNumber}}
+      <span class="reference-item">
+        <strong>Bill:</strong> {{billNumber}}
+      </span>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <!-- ═══ REFUND SECTION (if applicable) ═══ -->
+    {{#if showRefundSection}}
+    <div class="refund-block">
+      <div class="refund-label">Refund Details</div>
+      <div class="refund-row">
+        <span>Amount Refunded:</span>
+        <span class="amount">- &#8377; {{formatCurrency amountRefunded}}</span>
+      </div>
+      <div class="refund-row refund-net">
+        <span>Net Amount Retained:</span>
+        <span class="amount">&#8377; {{formatCurrency netAmount}}</span>
+      </div>
+      {{#if razorpayRefundId}}
+      <div style="font-size: 8px; margin-top: 6px; color: #7f8c8d;">
+        Refund ID: {{razorpayRefundId}}
+      </div>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <!-- ═══ FOOTER ═══ -->
+    <div class="receipt-footer">
+      <div class="thank-you">Thank You For Your Payment!</div>
+      <div class="footer-note">
+        This is a computer-generated receipt. No signature required.<br>
+        For queries, contact {{business.phone}}{{#if business.email}} or {{business.email}}{{/if}}
+      </div>
+      <div class="receipt-meta-footer">
+        Generated on {{formatDate receiptDate}} &bull; {{business.name}}{{#if business.state}} &bull; Subject to {{business.state}} Jurisdiction{{/if}}
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -11,6 +11,9 @@ const orderRoutes = require('./order.routes');
 const settingsRoutes = require('./systemSetting.routes');
 const stockMovementRoutes = require('./stockMovement.routes');
 const billRoutes = require('./bill.routes');
+const paymentRoutes = require('./payment.routes');
+const webhookRoutes = require('./webhook.routes');
+const reconciliationRoutes = require('./reconciliation.routes');
 
 router.use('/auth', authRoutes);
 router.use('/customers', customerRoutes);
@@ -22,5 +25,8 @@ router.use('/orders', orderRoutes);
 router.use('/system-settings', settingsRoutes);
 router.use('/stock-movements', stockMovementRoutes);
 router.use('/bills', billRoutes);
+router.use('/payments', paymentRoutes);
+router.use('/webhooks', webhookRoutes);
+router.use('/reconciliation', reconciliationRoutes);
 
 module.exports = router;

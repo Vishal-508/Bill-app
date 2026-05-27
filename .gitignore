@@ -65,6 +65,15 @@ backend/storage/temp/
 !**/storage/bills/.gitkeep
 !**/storage/temp/.gitkeep
 
+# ── QR code samples (test artifacts) ──────────────────────────
+backend/storage/qr-samples/*.png
+backend/storage/qr-samples/*.svg
+!backend/storage/qr-samples/.gitkeep
+
+# ── Payment receipts (generated PDFs) ─────────────────────────
+backend/storage/receipts/*.pdf
+!backend/storage/receipts/.gitkeep
+
 # ── Excel / source data (keep folder, ignore files) ───────────
 data/*.xlsx
 data/*.xlsm

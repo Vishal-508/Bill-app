@@ -67,7 +67,11 @@ exports.closeBrowser = async () => {
 };
 
 exports.loadTemplate = async (templateName) => {
-  const templatePath = path.join(__dirname, '../templates/bills', `${templateName}.hbs`);
+  // Backward-compatible: bare names (e.g. 'detailed-gst') resolve to templates/bills/.
+  // Names with a subdir prefix (e.g. 'receipts/payment-receipt') resolve from templates/ root.
+  const templatePath = templateName.includes('/')
+    ? path.join(__dirname, '../templates', `${templateName}.hbs`)
+    : path.join(__dirname, '../templates/bills', `${templateName}.hbs`);
 
   try {
     const source = await fs.readFile(templatePath, 'utf-8');

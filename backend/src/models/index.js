@@ -11,11 +11,13 @@ const SystemSetting = require('./SystemSetting');
 const Order = require('./Order');
 const StockMovement = require('./StockMovement');
 const Bill = require('./Bill');
+const Payment = require('./Payment');
+const WebhookEvent = require('./WebhookEvent');
 
 module.exports = {
   User, Customer, BusinessSegment,
   Product, ProductGrade, ProductAttribute,
   StandardBundleSize, ShapeCuttingRate, CuttingChargeRule,
   SystemSetting, Order, StockMovement,
-  Bill,
+  Bill, Payment, WebhookEvent,
 };

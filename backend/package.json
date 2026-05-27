@@ -41,7 +41,15 @@
     "test:minimal-bill": "node scripts/testMinimalBillTemplate.js",
     "test:bill-endpoints": "node scripts/testBillEndpoints.js",
     "test:bill-signatures": "node scripts/testBillSignatures.js",
-    "test:prompt5-e2e": "node scripts/testPrompt5E2E.js"
+    "test:prompt5-e2e": "node scripts/testPrompt5E2E.js",
+    "test:payment-foundation": "node scripts/testPaymentFoundation.js",
+    "test:payment-endpoints": "node scripts/testPaymentEndpoints.js",
+    "test:upi-qr": "node scripts/testUpiQr.js",
+    "test:webhooks": "node scripts/testWebhooks.js",
+    "test:refunds": "node scripts/testRefunds.js",
+    "test:reconciliation": "node scripts/testReconciliation.js",
+    "test:payment-receipt": "node scripts/testPaymentReceipt.js",
+    "test:prompt6-e2e": "node scripts/testPrompt6E2E.js"
   },
   "engines": {
     "node": ">=20"
