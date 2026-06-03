@@ -1,5 +1,6 @@
-const { Payment, WebhookEvent } = require('../models');
+const { Payment, WebhookEvent, Bill } = require('../models');
 const gatewayPaymentService = require('./gatewayPaymentService');
+const notificationOrchestrator = require('../services/notificationOrchestrator.service');
 const logger = require('../config/logger');
 
 /**
@@ -146,10 +147,18 @@ async function handlePaymentCaptured(event, actions) {
   await gatewayPaymentService.syncOrderPaymentStatus(payment.order);
   actions.push('order_synced');
 
+  let relatedBill = null;
   if (payment.bill) {
     await gatewayPaymentService.syncBillPaymentStatus(payment.bill);
     actions.push('bill_synced');
+    relatedBill = await Bill.findById(payment.bill).select('_id billNumber grandTotal').lean();
   }
+
+  // Fire-and-forget notification (Prompt 7 Section D).
+  // Never blocks the webhook 200 response; failures logged inside the orchestrator.
+  notificationOrchestrator.onPaymentReceived(payment, relatedBill)
+    .catch(notificationOrchestrator.noop);
+  actions.push('notification_dispatched');
 
   return { paymentRef: payment.paymentReference, handled: true };
 }

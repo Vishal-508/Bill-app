@@ -8,6 +8,7 @@ const { generateOrderNumber } = require('../utils/orderNumberGenerator');
 const pricingEngine = require('../utils/pricingEngine');
 const stockService = require('../utils/stockService');
 const paymentService = require('../utils/paymentService');
+const notificationOrchestrator = require('../services/notificationOrchestrator.service');
 
 /**
  * POST /api/orders
@@ -265,6 +266,12 @@ exports.changeStatus = asyncHandler(async (req, res) => {
   await order.save();
 
   logger.info(`Order status: ${order.orderNumber} ${oldStatus} → ${status} by ${req.user.email}`);
+
+  // Fire-and-forget notification when status becomes READY (Prompt 7 Section D).
+  // Never blocks API response; orchestrator handles its own errors.
+  if (status === 'READY' && oldStatus !== 'READY') {
+    notificationOrchestrator.onOrderReady(order).catch(notificationOrchestrator.noop);
+  }
 
   res.json({
     status: 'success',

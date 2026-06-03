@@ -128,6 +128,92 @@ const DEFAULT_SETTINGS = [
     isSystemDefault: true,
   },
 
+  // ═══ GENERAL category — Notifications (Prompt 7 Section A) ═══
+  // Stored under GENERAL because the SystemSetting schema enum is
+  // ['ORDER','BILLING','INVENTORY','GENERAL','NUMBERING']. Extending
+  // the enum to add a NOTIFICATIONS category would be a model migration.
+  {
+    key: 'WHATSAPP_ENABLED',
+    label: 'WhatsApp Notifications Enabled',
+    category: 'GENERAL',
+    description: 'Master switch for WhatsApp Cloud API notifications (bills, payment links, order updates)',
+    value: true,
+    defaultValue: true,
+    valueType: 'boolean',
+    displayOrder: 50,
+    isSystemDefault: true,
+  },
+  {
+    key: 'WHATSAPP_FALLBACK_TO_EMAIL',
+    label: 'Fall Back to Email if WhatsApp Fails',
+    category: 'GENERAL',
+    description: 'If a WhatsApp send fails or WhatsApp is disabled, attempt delivery via email (when customer.email is set)',
+    value: true,
+    defaultValue: true,
+    valueType: 'boolean',
+    displayOrder: 51,
+    isSystemDefault: true,
+  },
+
+  // ═══ GENERAL category — Email config (Prompt 7 Section E) ═══
+  {
+    key: 'EMAIL_ENABLED',
+    label: 'Email Notifications Enabled',
+    category: 'GENERAL',
+    description: 'Master switch for transactional email sends (bills, payment receipts, order notifications)',
+    value: true,
+    defaultValue: true,
+    valueType: 'boolean',
+    displayOrder: 52,
+    isSystemDefault: true,
+  },
+  {
+    key: 'EMAIL_FROM_ADDRESS',
+    label: 'Email From Address',
+    category: 'GENERAL',
+    description: 'Sender email address for outbound mail (overrides EMAIL_FROM env var if set)',
+    value: '',
+    defaultValue: '',
+    valueType: 'string',
+    displayOrder: 53,
+    isSystemDefault: true,
+  },
+  {
+    key: 'EMAIL_FROM_NAME',
+    label: 'Email From Name',
+    category: 'GENERAL',
+    description: 'Display name used in the "From" header of outbound mail',
+    value: 'Shree Gopal MDF',
+    defaultValue: 'Shree Gopal MDF',
+    valueType: 'string',
+    displayOrder: 54,
+    isSystemDefault: true,
+  },
+
+  // ═══ GENERAL category — Retry cron (Prompt 7 Section G) ═══
+  {
+    key: 'NOTIFICATION_RETRY_ENABLED',
+    label: 'Notification Retry Cron Enabled',
+    category: 'GENERAL',
+    description: 'Master switch for the failed-notification retry cron (runs every 30 minutes)',
+    value: true,
+    defaultValue: true,
+    valueType: 'boolean',
+    displayOrder: 60,
+    isSystemDefault: true,
+  },
+  {
+    key: 'NOTIFICATION_ADMIN_ALERT_EMAIL',
+    label: 'Notification Admin Alert Email',
+    category: 'GENERAL',
+    description: 'Email address that receives "permanently failed" alerts (falls back to EMAIL_FROM env var if empty)',
+    value: '',
+    defaultValue: '',
+    valueType: 'string',
+    displayOrder: 61,
+    isSystemDefault: true,
+  },
+
   // ═══ BILLING category — Invoice config (Prompt 5 Section A) ═══
   {
     key: 'INVOICE_TERMS_DEFAULT',

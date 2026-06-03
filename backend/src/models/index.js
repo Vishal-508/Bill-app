@@ -13,11 +13,13 @@ const StockMovement = require('./StockMovement');
 const Bill = require('./Bill');
 const Payment = require('./Payment');
 const WebhookEvent = require('./WebhookEvent');
+const WhatsAppLog = require('./WhatsAppLog');
+const EmailLog = require('./EmailLog');
 
 module.exports = {
   User, Customer, BusinessSegment,
   Product, ProductGrade, ProductAttribute,
   StandardBundleSize, ShapeCuttingRate, CuttingChargeRule,
   SystemSetting, Order, StockMovement,
-  Bill, Payment, WebhookEvent,
+  Bill, Payment, WebhookEvent, WhatsAppLog, EmailLog,
 };

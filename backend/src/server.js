@@ -77,6 +77,19 @@ app.use('/api/webhooks/razorpay',
   })
 );
 
+// 5c. WhatsApp Cloud API webhook (Prompt 7 Section C) — Meta sends
+// x-hub-signature-256 HMAC of the raw JSON bytes. Must run BEFORE
+// express.json() so we get a Buffer body for signature verification.
+app.use('/api/whatsapp/webhook',
+  express.raw({
+    type: 'application/json',
+    limit: '1mb',
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
+
 // 6. Body parsers with size limits (DoS protection)
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
@@ -108,6 +121,9 @@ app.get('/api/health', (req, res) => {
 // ═══ API Routes ═══
 const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
+
+// ═══ Cron Jobs (Prompt 7 Section G — registers on import, skipped in test) ═══
+require('./jobs/notificationRetry.cron');
 
 // ═══ 404 handler (must be after all routes) ═══
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');

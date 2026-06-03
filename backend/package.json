@@ -49,7 +49,16 @@
     "test:refunds": "node scripts/testRefunds.js",
     "test:reconciliation": "node scripts/testReconciliation.js",
     "test:payment-receipt": "node scripts/testPaymentReceipt.js",
-    "test:prompt6-e2e": "node scripts/testPrompt6E2E.js"
+    "test:prompt6-e2e": "node scripts/testPrompt6E2E.js",
+    "test:real-mode": "node scripts/realModeTest.js",
+    "test:wa-foundation": "node scripts/testWhatsappFoundation.js",
+    "test:wa-send": "node scripts/testWhatsappSend.js",
+    "test:wa-webhook": "node scripts/testWhatsappWebhook.js",
+    "test:wa-orchestrator": "node scripts/testWhatsappOrchestrator.js",
+    "test:email": "node scripts/testEmailService.js",
+    "test:notification-logs": "node scripts/testNotificationLogs.js",
+    "test:notification-retry": "node scripts/testNotificationRetry.js",
+    "test:prompt7-e2e": "node scripts/testPrompt7E2E.js"
   },
   "engines": {
     "node": ">=20"

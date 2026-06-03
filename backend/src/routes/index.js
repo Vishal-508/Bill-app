@@ -14,6 +14,9 @@ const billRoutes = require('./bill.routes');
 const paymentRoutes = require('./payment.routes');
 const webhookRoutes = require('./webhook.routes');
 const reconciliationRoutes = require('./reconciliation.routes');
+const whatsappRoutes = require('./whatsapp.routes');
+const emailRoutes = require('./email.routes');
+const notificationsRoutes = require('./notifications.routes');
 
 router.use('/auth', authRoutes);
 router.use('/customers', customerRoutes);
@@ -28,5 +31,8 @@ router.use('/bills', billRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/webhooks', webhookRoutes);
 router.use('/reconciliation', reconciliationRoutes);
+router.use('/whatsapp', whatsappRoutes);
+router.use('/email', emailRoutes);
+router.use('/notifications', notificationsRoutes);
 
 module.exports = router;
