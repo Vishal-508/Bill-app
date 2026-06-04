@@ -122,8 +122,11 @@ app.get('/api/health', (req, res) => {
 const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
 
-// ═══ Cron Jobs (Prompt 7 Section G — registers on import, skipped in test) ═══
+// ═══ Cron Jobs (Prompts 7 G + 8 F — register on import, skipped in test) ═══
 require('./jobs/notificationRetry.cron');
+require('./jobs/dailyForecast.cron');
+require('./jobs/dailyAnalytics.cron');
+require('./jobs/weeklyAdminReport.cron');
 
 // ═══ 404 handler (must be after all routes) ═══
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');

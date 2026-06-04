@@ -489,3 +489,35 @@ exports.sendPaymentReceiptEmail = async ({ to, customerName, amount, invoiceNo, 
     retryContext,
   });
 };
+
+/**
+ * Generic admin report email (Prompt 8 Section F).
+ *
+ * For weekly/ad-hoc admin-facing reports that don't fit the
+ * transactional templates above. Uses EmailLog type='TEXT' so the
+ * report-grade emails are distinguishable from customer transactional
+ * mail in /api/email/logs filters.
+ *
+ * @param {Object} opts
+ * @param {string} opts.to        Recipient email
+ * @param {string} opts.subject   Email subject
+ * @param {string} opts.bodyText  Plain-text body (used directly + as fallback)
+ * @param {string} [opts.bodyHtml] HTML body; if omitted, bodyText wrapped in shell
+ */
+exports.sendAdminReportEmail = async ({ to, subject, bodyText, bodyHtml }) => {
+  const heading = subject || 'Admin Report';
+  const html = bodyHtml || shell({
+    heading,
+    bodyHtml: `<pre style="white-space:pre-wrap;font-family:Arial,sans-serif;font-size:13px;line-height:1.5;">${(bodyText || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</pre>`,
+  });
+  return sendMail({
+    to,
+    subject,
+    html,
+    text: bodyText,
+    label: 'sendAdminReportEmail',
+    logType: 'TEXT',
+    logContext: {},
+    payload: { subject, isAdminReport: true },
+  });
+};

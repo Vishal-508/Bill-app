@@ -58,7 +58,15 @@
     "test:email": "node scripts/testEmailService.js",
     "test:notification-logs": "node scripts/testNotificationLogs.js",
     "test:notification-retry": "node scripts/testNotificationRetry.js",
-    "test:prompt7-e2e": "node scripts/testPrompt7E2E.js"
+    "test:prompt7-e2e": "node scripts/testPrompt7E2E.js",
+    "seed:vendors": "node scripts/seedVendors.js",
+    "test:inventory-foundation": "node scripts/testInventoryFoundation.js",
+    "test:inventory-analytics": "node scripts/testInventoryAnalytics.js",
+    "test:forecast-service": "node scripts/testForecastService.js",
+    "test:forecast-endpoints": "node scripts/testForecastEndpoints.js",
+    "test:vendor-purchase": "node scripts/testVendorPurchase.js",
+    "test:cron-jobs": "node scripts/testCronJobs.js",
+    "test:prompt8-e2e": "node scripts/testPrompt8E2E.js"
   },
   "engines": {
     "node": ">=20"
@@ -85,6 +93,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
+    "nostradamus": "^0.1.0",
     "puppeteer": "^25.0.4",
     "qrcode": "^1.5.3",
     "razorpay": "^2.9.4",

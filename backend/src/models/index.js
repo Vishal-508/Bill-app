@@ -15,6 +15,8 @@ const Payment = require('./Payment');
 const WebhookEvent = require('./WebhookEvent');
 const WhatsAppLog = require('./WhatsAppLog');
 const EmailLog = require('./EmailLog');
+const Vendor = require('./Vendor');
+const Purchase = require('./Purchase');
 
 module.exports = {
   User, Customer, BusinessSegment,
@@ -22,4 +24,5 @@ module.exports = {
   StandardBundleSize, ShapeCuttingRate, CuttingChargeRule,
   SystemSetting, Order, StockMovement,
   Bill, Payment, WebhookEvent, WhatsAppLog, EmailLog,
+  Vendor, Purchase,
 };

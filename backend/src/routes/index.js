@@ -17,6 +17,11 @@ const reconciliationRoutes = require('./reconciliation.routes');
 const whatsappRoutes = require('./whatsapp.routes');
 const emailRoutes = require('./email.routes');
 const notificationsRoutes = require('./notifications.routes');
+const inventoryAnalyticsRoutes = require('./inventoryAnalytics.routes');
+const forecastRoutes = require('./forecast.routes');
+const vendorRoutes = require('./vendor.routes');
+const purchaseRoutes = require('./purchase.routes');
+const cronControlRoutes = require('./cronControl.routes');
 
 router.use('/auth', authRoutes);
 router.use('/customers', customerRoutes);
@@ -34,5 +39,10 @@ router.use('/reconciliation', reconciliationRoutes);
 router.use('/whatsapp', whatsappRoutes);
 router.use('/email', emailRoutes);
 router.use('/notifications', notificationsRoutes);
+router.use('/inventory/analytics', inventoryAnalyticsRoutes);
+router.use('/forecast', forecastRoutes);
+router.use('/vendors', vendorRoutes);
+router.use('/purchases', purchaseRoutes);
+router.use('/cron', cronControlRoutes);
 
 module.exports = router;

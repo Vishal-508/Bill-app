@@ -20,6 +20,41 @@ const priceHistoryEntrySchema = new mongoose.Schema(
   { _id: false }
 );
 
+// ─── Forecast + consumption analytics (Prompt 8) ───
+// Denormalized cache, updated by jobs/dailyForecast + dailyAnalytics crons.
+// Read-heavy for admin dashboards. Stays in sync with StockMovement
+// aggregations; recomputed nightly. See [[prompt8_inventory_analytics_only]]
+// in memory — this is admin analytics ONLY and never gates order flow.
+const lastForecastSchema = new mongoose.Schema(
+  {
+    next30days: { type: Number, default: 0, min: 0 },
+    next90days: { type: Number, default: 0, min: 0 },
+    next180days: { type: Number, default: 0, min: 0 },
+    method: {
+      type: String,
+      enum: ['holt-winters', 'moving-average', 'naive', 'fallback'],
+      default: 'fallback',
+    },
+    mape: { type: Number, default: null, min: 0 }, // null if not computable
+    computedAt: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
+const forecastDataSchema = new mongoose.Schema(
+  {
+    last30Days: { type: Number, default: 0, min: 0 },
+    last90Days: { type: Number, default: 0, min: 0 },
+    last365Days: { type: Number, default: 0, min: 0 },
+    avgMonthly: { type: Number, default: 0, min: 0 },
+    avgWeekly: { type: Number, default: 0, min: 0 },
+    peakMonths: { type: [String], default: [] },
+    lastForecast: { type: lastForecastSchema, default: () => ({}) },
+    lastComputedAt: Date,
+  },
+  { _id: false }
+);
+
 const productSchema = new mongoose.Schema(
   {
     // ═══ Type discriminator ═══
@@ -144,6 +179,9 @@ const productSchema = new mongoose.Schema(
     minStockAlert: { type: Number, default: 10, min: 0 },
     reorderQuantity: { type: Number, default: 50, min: 0 },
     lastRestockedAt: Date,
+
+    // ═══ Forecast + consumption analytics (Prompt 8) — admin-only insight ═══
+    forecastData: { type: forecastDataSchema, default: () => ({}) },
 
     // ═══ Tax ═══
     hsnCode: {
