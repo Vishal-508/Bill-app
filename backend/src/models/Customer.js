@@ -219,6 +219,14 @@ const customerSchema = new mongoose.Schema(
       ref: 'User',
     },
     notes: { type: String, trim: true, maxlength: 2000 },
+
+    // Prompt 9 D — Excel migration tagging. Populated only on records
+    // imported via scripts/migrateExcel.js. Indexed for cleanup queries.
+    migrationMeta: {
+      source: { type: String, index: true },
+      sourceRow: Number,
+      importedAt: Date,
+    },
   },
   {
     timestamps: true,

@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
   dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 }
 
+const http = require('http');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -18,6 +19,7 @@ const connectDB = require('./config/db');
 const logger = require('./config/logger');
 const morganLogger = require('./middleware/morganLogger');
 const { generalLimiter } = require('./middleware/rateLimiters');
+const sockets = require('./sockets');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -137,13 +139,20 @@ app.use(errorHandler);
 
 // ═══ Server Startup ═══
 
+// HTTP server is created up front so Socket.IO can attach to it BEFORE
+// app.listen() — required so the upgrade handler is registered when the
+// first WS handshake arrives.
+const httpServer = http.createServer(app);
+sockets.init(httpServer);
+
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`);
       logger.info(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`📍 Health check: http://localhost:${PORT}/api/health`);
+      logger.info(`📡 Socket.IO listening on the same port (path=/socket.io)`);
       logger.info(`🛡️  Security middleware: helmet, cors, rate-limit, mongo-sanitize, compression`);
     });
   } catch (error) {

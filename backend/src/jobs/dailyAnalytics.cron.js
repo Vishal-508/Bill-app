@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const logger = require('../config/logger');
 const { Product, StockMovement, SystemSetting } = require('../models');
+const sockets = require('../sockets');
 
 /**
  * Daily Analytics Cron (Prompt 8 Section F).
@@ -152,6 +153,32 @@ exports.dailyAnalyticsJob = async () => {
       summary.errors.push({ productId: p._id, sku: p.sku, error: err.message });
       summary.failed++;
     }
+  }
+
+  // ─── Low-stock detection + real-time broadcast (Prompt 9 Section B) ───
+  // After analytics completes, scan for products at/below their alert
+  // threshold and emit a single batched event. This is the only writer of
+  // the inventory:low-stock socket event — keeps the surface small.
+  try {
+    const lowStock = await Product.find({
+      isActive: true,
+      isDeleted: false,
+      $expr: { $lte: ['$currentStock', '$minStockAlert'] },
+      minStockAlert: { $gt: 0 }, // skip products that opted out (threshold=0)
+    })
+      .select('_id sku name currentStock minStockAlert')
+      .limit(50)
+      .lean();
+    if (lowStock.length > 0) {
+      sockets.emitLowStock(lowStock);
+      summary.lowStockCount = lowStock.length;
+      logger.info(`[cron:analytics] low-stock alert: ${lowStock.length} product(s)`);
+    } else {
+      summary.lowStockCount = 0;
+    }
+  } catch (err) {
+    logger.error(`[cron:analytics] low-stock detection failed: ${err.message}`);
+    summary.lowStockCount = 0;
   }
 
   summary.finishedAt = new Date();

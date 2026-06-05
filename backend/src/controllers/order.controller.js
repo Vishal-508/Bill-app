@@ -9,6 +9,7 @@ const pricingEngine = require('../utils/pricingEngine');
 const stockService = require('../utils/stockService');
 const paymentService = require('../utils/paymentService');
 const notificationOrchestrator = require('../services/notificationOrchestrator.service');
+const sockets = require('../sockets');
 
 /**
  * POST /api/orders
@@ -80,6 +81,10 @@ exports.create = asyncHandler(async (req, res) => {
   ]);
 
   logger.info(`Order created: ${order.orderNumber} by ${req.user.email} for ${customer.customerName}`);
+
+  // Fire-and-forget real-time broadcast (Prompt 9 Section B).
+  // safeEmit handles null io + throws internally — never blocks response.
+  sockets.emitOrderNew(order);
 
   res.status(201).json({ status: 'success', data: order });
 });
@@ -266,6 +271,13 @@ exports.changeStatus = asyncHandler(async (req, res) => {
   await order.save();
 
   logger.info(`Order status: ${order.orderNumber} ${oldStatus} → ${status} by ${req.user.email}`);
+
+  // Fire-and-forget real-time broadcasts (Prompt 9 Section B).
+  // Specific event carries oldStatus → newStatus; the generic update
+  // event is also emitted so dashboard widgets that only care about
+  // "something changed on this order" can subscribe once.
+  sockets.emitOrderStatusChanged(order, oldStatus);
+  sockets.emitOrderUpdated(order);
 
   // Fire-and-forget notification when status becomes READY (Prompt 7 Section D).
   // Never blocks API response; orchestrator handles its own errors.

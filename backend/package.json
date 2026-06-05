@@ -66,7 +66,15 @@
     "test:forecast-endpoints": "node scripts/testForecastEndpoints.js",
     "test:vendor-purchase": "node scripts/testVendorPurchase.js",
     "test:cron-jobs": "node scripts/testCronJobs.js",
-    "test:prompt8-e2e": "node scripts/testPrompt8E2E.js"
+    "test:prompt8-e2e": "node scripts/testPrompt8E2E.js",
+    "test:socket-foundation": "node scripts/testSocketFoundation.js",
+    "test:socket-wiring": "node scripts/testSocketWiring.js",
+    "test:excel-inspect": "node scripts/testExcelInspection.js",
+    "test:excel-migrate": "node scripts/testExcelMigration.js",
+    "migrate:excel": "node scripts/migrateExcel.js",
+    "generate:samples": "node scripts/generateSampleTemplates.js",
+    "test:migration-docs": "node scripts/testMigrationDocs.js",
+    "test:prompt9-e2e": "node scripts/testPrompt9E2E.js"
   },
   "engines": {
     "node": ">=20"
@@ -100,6 +108,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "socket.io": "^4.7.5",
+    "socket.io-client": "^4.8.3",
     "upiqrcode": "^1.0.5",
     "winston": "^3.13.1",
     "xlsx": "^0.18.5",

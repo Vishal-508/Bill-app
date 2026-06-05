@@ -12,6 +12,7 @@ const billService = require('../utils/billService');
 const pdfService = require('../utils/pdfService');
 const { mapBillToTemplate } = require('../utils/billDataMapper');
 const notificationOrchestrator = require('../services/notificationOrchestrator.service');
+const sockets = require('../sockets');
 
 // ─── Internal helper: PDF generation ───
 async function generatePdfForBill(bill) {
@@ -85,6 +86,9 @@ exports.createFromOrder = asyncHandler(async (req, res) => {
   ]);
 
   logger.info(`Bill created: ${bill.billNumber} from order ${order.orderNumber} by ${req.user.email}`);
+
+  // Fire-and-forget real-time broadcast (Prompt 9 Section B).
+  sockets.emitBillGenerated(bill);
 
   // Fire-and-forget notification (Prompt 7 Section D). Never blocks response;
   // failures logged via the orchestrator's own try/catch + noop tail.

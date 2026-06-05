@@ -231,6 +231,13 @@ const orderSchema = new mongoose.Schema(
     isDeleted: { type: Boolean, default: false, index: true },
     deletedAt: Date,
     deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+
+    // Prompt 9 D — Excel migration tagging.
+    migrationMeta: {
+      source: { type: String, index: true },
+      sourceRow: Number,
+      importedAt: Date,
+    },
   },
   { timestamps: true }
 );

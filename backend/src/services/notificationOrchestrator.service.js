@@ -1,6 +1,7 @@
 const { Customer, SystemSetting, WhatsAppLog } = require('../models');
 const whatsappService = require('../utils/whatsappService');
 const emailService = require('../utils/emailService');
+const sockets = require('../sockets');
 const logger = require('../config/logger');
 
 /**
@@ -171,6 +172,12 @@ exports.onPaymentReceived = async (payment, bill) => {
       result.error = 'payment_required';
       return result;
     }
+
+    // Fire-and-forget real-time broadcast (Prompt 9 Section B).
+    // Single source of truth: both Razorpay webhook and any future manual
+    // payment confirmation path call this orchestrator, so the socket emit
+    // lives here (not duplicated in each caller). safeEmit catches throws.
+    sockets.emitPaymentReceived(payment, bill);
 
     // Payment has customer ObjectId — hydrate
     const customer = await Customer.findById(payment.customer)
