@@ -101,6 +101,14 @@ const createCustomerSchema = z.object({
 
   // Admin notes
   notes: z.string().trim().max(2000).optional(),
+
+  // Activation state — kept in createCustomerSchema (rather than only
+  // on the bulk-update schema) so single-customer PUT can toggle it.
+  // Zod's default strip-mode silently dropped this on individual
+  // updates, causing the admin UI's "Deactivate" button to no-op
+  // and refetch back to Active. Found in Prompt 11 Section D browser
+  // verification.
+  isActive: z.boolean().optional(),
 });
 
 // Update schema = all fields optional (partial update)

@@ -13,7 +13,13 @@
     "test:datatable": "node scripts/testDataTable.js",
     "test:routing": "node scripts/testRouting.js",
     "test:login-flow": "node scripts/testLoginFlow.js",
-    "test:socket-client": "node scripts/testSocketClient.js"
+    "test:socket-client": "node scripts/testSocketClient.js",
+    "test:customer-product-api": "node scripts/testCustomerProductApi.js",
+    "test:customers-list": "node scripts/testCustomersListPage.js",
+    "test:customer-form": "node scripts/testCustomerFormModal.js",
+    "test:customer-detail": "node scripts/testCustomerDetail.js",
+    "test:products": "node scripts/testProducts.js",
+    "test:prompt11-e2e": "node scripts/testPrompt11E2E.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.2",

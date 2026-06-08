@@ -15,3 +15,4 @@ export { Spinner } from './Spinner.jsx';
 export { EmptyState } from './EmptyState.jsx';
 export { Alert } from './Alert.jsx';
 export { Tooltip } from './Tooltip.jsx';
+export { PageHeader } from './PageHeader.jsx';

@@ -15,4 +15,76 @@ export const loginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 
-// Future forms will extend this file (customer/product/order schemas etc.)
+// ─── Shared building blocks ───
+// Reused inside customer + future vendor/order schemas.
+
+const phoneRegex = /^[6-9]\d{9}$/;
+const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}Z[0-9A-Z]{1}$/;
+const pincodeRegex = /^[1-9][0-9]{5}$/;
+const stateCodeRegex = /^\d{2}$/;
+
+export const phoneField = z.string()
+  .regex(phoneRegex, 'Invalid Indian mobile number');
+
+// Optional phone — accepts empty string OR a valid mobile.
+export const optionalPhoneField = z.union([
+  z.literal(''),
+  z.string().regex(phoneRegex, 'Invalid Indian mobile number'),
+]).optional();
+
+export const optionalEmailField = z.union([
+  z.literal(''),
+  z.string().email('Invalid email format'),
+]).optional();
+
+export const addressFieldsSchema = z.object({
+  line1:     z.string().trim().min(3, 'Address line 1 is required').max(200),
+  line2:     z.string().trim().max(200).optional().or(z.literal('')),
+  city:      z.string().trim().min(2, 'City is required').max(100),
+  state:     z.string().trim().min(2, 'State is required').max(100),
+  stateCode: z.string().trim().regex(stateCodeRegex, '2-digit state code'),
+  pincode:   z.string().trim().regex(pincodeRegex, 'Invalid 6-digit pincode'),
+});
+
+// ─── Customer create/update schema ───
+// Matches backend's createCustomerSchema (validators/customer.validator.js):
+//   - field is `customerName` not `name`
+//   - address is nested under `billingAddress` (not flat)
+//   - billType is FRONTEND-ONLY (drives GSTIN visibility); we strip
+//     it before sending to the API
+//   - GSTIN required IFF billType === 'GST', enforced via refine()
+export const customerSchema = z.object({
+  customerName:    z.string().trim().min(2, 'Name must be at least 2 characters').max(100),
+  companyName:     z.string().trim().max(200).optional().or(z.literal('')),
+  phone:           phoneField,
+  altPhone:        optionalPhoneField,
+  email:           optionalEmailField,
+
+  billType:        z.enum(['GST', 'NON_GST']),
+  gstin:           z.string().trim().toUpperCase().optional().or(z.literal('')),
+
+  billingAddress:  addressFieldsSchema,
+
+  creditLimit:     z.coerce.number().min(0, 'Credit limit cannot be negative').optional(),
+  notes:           z.string().trim().max(500, 'Notes must be under 500 characters')
+                       .optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  if (data.billType === 'GST') {
+    if (!data.gstin) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['gstin'],
+        message: 'GSTIN is required for GST customers',
+      });
+    } else if (!gstinRegex.test(data.gstin)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['gstin'],
+        message: 'Invalid GSTIN format',
+      });
+    }
+  }
+});
+
+// Export regexes for the form's runtime UX (auto-uppercase, mask, etc.)
+export const _patterns = { phoneRegex, gstinRegex, pincodeRegex, stateCodeRegex };

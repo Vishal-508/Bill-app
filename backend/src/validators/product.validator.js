@@ -50,6 +50,12 @@ const createProductSchema = z.object({
 
   // Notes
   notes: z.string().trim().max(2000).optional(),
+
+  // Activation toggle — same fix as customer (Prompt 11 Section D):
+  // without declaring this, Zod's default `.strip()` silently drops
+  // it from PUT bodies and the toggle no-ops. Declared here so
+  // updateProductSchema.partial() inherits.
+  isActive: z.boolean().optional(),
 });
 
 const updateProductSchema = createProductSchema.partial();

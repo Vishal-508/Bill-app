@@ -10,6 +10,10 @@ const Login = lazy(() => import('./pages/auth/Login.jsx'));
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 const Placeholder = lazy(() => import('./pages/_Placeholder.jsx'));
+const CustomersList = lazy(() => import('./pages/customers/CustomersList.jsx'));
+const CustomerDetail = lazy(() => import('./pages/customers/CustomerDetail.jsx'));
+const ProductsList = lazy(() => import('./pages/products/ProductsList.jsx'));
+const ProductDetail = lazy(() => import('./pages/products/ProductDetail.jsx'));
 
 function PageFallback() {
   return (
@@ -34,8 +38,10 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/orders" element={<Placeholder title="Orders" />} />
-            <Route path="/customers" element={<Placeholder title="Customers" />} />
-            <Route path="/products" element={<Placeholder title="Products" />} />
+            <Route path="/customers" element={<CustomersList />} />
+            <Route path="/customers/:customerId" element={<CustomerDetail />} />
+            <Route path="/products" element={<ProductsList />} />
+            <Route path="/products/:productId" element={<ProductDetail />} />
             <Route path="/bills" element={<Placeholder title="Bills" />} />
             <Route path="/payments" element={<Placeholder title="Payments" />} />
             <Route path="/inventory" element={<Placeholder title="Inventory" />} />

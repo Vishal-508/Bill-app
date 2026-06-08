@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import {
   useReactTable, getCoreRowModel, flexRender,
 } from '@tanstack/react-table';
@@ -40,10 +40,21 @@ export function DataTable({
   emptyState,
   density = 'normal',
   stickyHeader = true,
+  // Parent bumps this (e.g., on successful bulk action) to clear all
+  // row checkboxes. Tanstack owns `rowSelection` internally so the
+  // parent's `selectedRows` mirror alone can't clear the UI — this
+  // gives them an imperative kick.
+  selectionResetSignal = 0,
   className,
 }) {
   const [rowSelection, setRowSelection] = useState({});
   const [openActionRow, setOpenActionRow] = useState(null);
+
+  useEffect(() => {
+    setRowSelection({});
+    // selectionResetSignal === 0 on mount; effect just runs once
+    // harmlessly. Subsequent bumps clear the selection state.
+  }, [selectionResetSignal]);
 
   // Build the column set: optional checkbox column + caller's columns +
   // optional actions column. useMemo so tanstack doesn't re-create the
