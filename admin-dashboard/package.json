@@ -19,7 +19,15 @@
     "test:customer-form": "node scripts/testCustomerFormModal.js",
     "test:customer-detail": "node scripts/testCustomerDetail.js",
     "test:products": "node scripts/testProducts.js",
-    "test:prompt11-e2e": "node scripts/testPrompt11E2E.js"
+    "test:prompt11-e2e": "node scripts/testPrompt11E2E.js",
+    "test:order-bill-payment-api": "node scripts/testOrderBillPaymentApi.js",
+    "test:orders-list": "node scripts/testOrdersListPage.js",
+    "test:order-form": "node scripts/testOrderFormModal.js",
+    "test:order-detail": "node scripts/testOrderDetail.js",
+    "test:bills": "node scripts/testBillsModule.js",
+    "test:payments": "node scripts/testPaymentsModule.js",
+    "test:prompt12-e2e": "node scripts/testPrompt12E2E.js",
+    "test:payments": "node scripts/testPaymentsModule.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.2",

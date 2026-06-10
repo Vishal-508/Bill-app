@@ -14,6 +14,12 @@ const CustomersList = lazy(() => import('./pages/customers/CustomersList.jsx'));
 const CustomerDetail = lazy(() => import('./pages/customers/CustomerDetail.jsx'));
 const ProductsList = lazy(() => import('./pages/products/ProductsList.jsx'));
 const ProductDetail = lazy(() => import('./pages/products/ProductDetail.jsx'));
+const OrdersList = lazy(() => import('./pages/orders/OrdersList.jsx'));
+const OrderDetail = lazy(() => import('./pages/orders/OrderDetail.jsx'));
+const BillsList = lazy(() => import('./pages/bills/BillsList.jsx'));
+const BillDetail = lazy(() => import('./pages/bills/BillDetail.jsx'));
+const PaymentsList = lazy(() => import('./pages/payments/PaymentsList.jsx'));
+const PaymentDetail = lazy(() => import('./pages/payments/PaymentDetail.jsx'));
 
 function PageFallback() {
   return (
@@ -37,13 +43,16 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/orders" element={<Placeholder title="Orders" />} />
+            <Route path="/orders" element={<OrdersList />} />
+            <Route path="/orders/:orderId" element={<OrderDetail />} />
             <Route path="/customers" element={<CustomersList />} />
             <Route path="/customers/:customerId" element={<CustomerDetail />} />
             <Route path="/products" element={<ProductsList />} />
             <Route path="/products/:productId" element={<ProductDetail />} />
-            <Route path="/bills" element={<Placeholder title="Bills" />} />
-            <Route path="/payments" element={<Placeholder title="Payments" />} />
+            <Route path="/bills" element={<BillsList />} />
+            <Route path="/bills/:billId" element={<BillDetail />} />
+            <Route path="/payments" element={<PaymentsList />} />
+            <Route path="/payments/:paymentId" element={<PaymentDetail />} />
             <Route path="/inventory" element={<Placeholder title="Inventory" />} />
             <Route path="/analytics" element={<Placeholder title="Analytics" />} />
             <Route path="/whatsapp" element={<Placeholder title="WhatsApp" />} />

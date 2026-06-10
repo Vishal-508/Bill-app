@@ -88,3 +88,57 @@ export const customerSchema = z.object({
 
 // Export regexes for the form's runtime UX (auto-uppercase, mask, etc.)
 export const _patterns = { phoneRegex, gstinRegex, pincodeRegex, stateCodeRegex };
+
+// ─── Order line item ───
+// FORM shape only — submit-time we transform discountMode + discountValue
+// into the backend's split (discountPct vs discountAmount) and stamp
+// itemType + lineSubtotal. See OrderFormModal's onSubmit.
+export const orderItemSchema = z.object({
+  product: z.string().min(1, 'Product is required'),
+  // Snapshot is local-only state used to render the picked-product card;
+  // not sent to the backend. .passthrough() so RHF doesn't complain.
+  productSnapshot: z.any().optional(),
+  quantity: z.coerce.number().int('Quantity must be a whole number').positive('Quantity must be ≥ 1'),
+  pricePerUnit: z.coerce.number().nonnegative('Price cannot be negative'),
+  discountMode: z.enum(['percent', 'amount']).default('percent'),
+  discountValue: z.coerce.number().nonnegative().default(0),
+  notes: z.string().trim().max(500).optional().or(z.literal('')),
+});
+
+// ─── Order schema (form-shape) ───
+// CustomerStateCode is captured into the form so the GST calculator can
+// pick CGST+SGST vs IGST; it's NOT a backend field, derived from
+// customer.billingAddress.stateCode on selection.
+export const orderSchema = z.object({
+  customer:               z.string().min(1, 'Customer is required'),
+  customerStateCode:      z.string().optional().or(z.literal('')),
+  orderDate:              z.string().min(1, 'Order date is required'),
+  expectedDeliveryDate:   z.string().optional().or(z.literal('')),
+  items:                  z.array(orderItemSchema).min(1, 'Add at least one item'),
+  gstRatePct:             z.coerce.number().min(0).max(100).default(18),
+
+  // Order-level discount
+  orderDiscountMode:      z.enum(['percent', 'amount']).default('amount'),
+  orderDiscountValue:     z.coerce.number().nonnegative().default(0),
+  discountReason:         z.string().trim().max(500).optional().or(z.literal('')),
+
+  // Toggles
+  roundOff:               z.boolean().default(false),
+  hasGstBill:             z.boolean().default(true),
+  deliveryMethod:         z.enum(['PICKUP', 'DELIVERY']).default('PICKUP'),
+  paymentMode:            z.enum(['FULL_UPFRONT', 'PARTIAL', 'CREDIT']).default('FULL_UPFRONT'),
+
+  // Notes
+  customerNotes:          z.string().trim().max(2000).optional().or(z.literal('')),
+  internalNotes:          z.string().trim().max(2000).optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  // discountReason required when an order-level discount is applied
+  const hasDiscount = (+data.orderDiscountValue || 0) > 0;
+  if (hasDiscount && (!data.discountReason || data.discountReason.trim().length < 3)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['discountReason'],
+      message: 'Reason required (≥3 chars) when applying a discount',
+    });
+  }
+});
